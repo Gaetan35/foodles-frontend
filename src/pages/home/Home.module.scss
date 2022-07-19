@@ -1,3 +1,23 @@
 .homePageContainer {
   min-height: 100vh;
+
+  .topbar {
+    padding: 2rem;
+    background-color: #64adab;
+  }
+
+  .pageContainer {
+    padding: 2rem;
+
+    .title {
+      margin: 10rem 0;
+      font-size: 4rem;
+      font-weight: bold;
+    }
+
+    .cardsContainer {
+      display: flex;
+      column-gap: 3rem;
+    }
+  }
 }
