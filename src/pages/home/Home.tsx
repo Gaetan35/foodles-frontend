@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { useQuery } from "react-query";
 import { apiRoutes } from "../../routes/apiRoutes";
+import { Cart } from "../../types/cart";
 import { Product } from "../../types/product";
 import { sendFetchRequest } from "../../utils/sendFetchRequest";
 import styles from "./Home.module.scss";
@@ -12,6 +14,19 @@ export const Home = () => {
     sendFetchRequest(apiRoutes.fetchProducts)
   );
 
+  const [cart, setCart] = useState<Cart>({});
+
+  const modifyCart = (productId: string, unitPrice: number, amount: number) => {
+    setCart((previousCart) => {
+      const previousQuantity = previousCart[productId]?.quantity ?? 0;
+
+      return {
+        ...previousCart,
+        [productId]: { unitPrice, quantity: previousQuantity + amount },
+      };
+    });
+  };
+
   return (
     <div className={styles.homePageContainer}>
       <div className={styles.topbar}>Topbar</div>
@@ -20,7 +35,12 @@ export const Home = () => {
 
         <div className={styles.cardsContainer}>
           {products?.map((product) => (
-            <ProductCard {...product} />
+            <ProductCard
+              key={product.id}
+              {...product}
+              modifyCart={modifyCart}
+              selectedQuantity={cart[product.id]?.quantity ?? 0}
+            />
           ))}
         </div>
       </div>
