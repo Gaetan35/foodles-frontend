@@ -17,8 +17,11 @@ export const ProductCard = ({
   price,
   imageUrl,
   selectedQuantity,
+  stock,
   modifyCart,
 }: ProductCardProps) => {
+  const isMaxQuantity = selectedQuantity === stock;
+
   return (
     <div className={styles.cardContainer}>
       <div className={styles.imageContainer}>
@@ -54,9 +57,12 @@ export const ProductCard = ({
               <button
                 className={classNames(
                   styles.addToCart,
-                  styles.productCartButton
+                  styles.productCartButton,
+                  { [styles.disabledButton]: isMaxQuantity }
                 )}
+                disabled={isMaxQuantity}
                 onClick={() => modifyCart(id, price, 1)}
+                title={isMaxQuantity ? "Quantité maximale atteinte" : ""}
               >
                 <PlusIcon />
               </button>
