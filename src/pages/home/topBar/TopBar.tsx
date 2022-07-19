@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { Cart } from "../../../types/cart";
 import { formatPrice } from "../../../utils/formatPrice";
 import styles from "./TopBar.module.scss";
@@ -26,6 +27,9 @@ export const TopBar = ({
   setSelectedClient,
   clients,
 }: TopBarProps) => {
+  const totalCartPrice = computeTotalCartPrice(cart);
+  const isOrderDisabled = selectedClient === undefined || totalCartPrice === 0;
+
   return (
     <div className={styles.topBar}>
       <div className={styles.flexRow}>
@@ -40,11 +44,19 @@ export const TopBar = ({
           </p>
         )}
       </div>
-      <button className={styles.cartRecap}>
+      <button
+        className={classNames(styles.cartRecap, {
+          [styles.disabledOrderButton]: isOrderDisabled,
+        })}
+        disabled={isOrderDisabled}
+        title={
+          isOrderDisabled
+            ? "Veuillez sélectionner un client et au moins un produit"
+            : ""
+        }
+      >
         <CartIcon />
-        <p className={styles.totalCartPrice}>
-          {formatPrice(computeTotalCartPrice(cart))}
-        </p>
+        <p className={styles.totalCartPrice}>{formatPrice(totalCartPrice)}</p>
       </button>
     </div>
   );
