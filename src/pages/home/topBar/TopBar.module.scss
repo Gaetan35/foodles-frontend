@@ -1,0 +1,22 @@
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  background-color: #64adab;
+
+  .cartRecap {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    background-color: #b8e5e9;
+    border-radius: 0.5rem;
+
+    .totalCartPrice {
+      margin-left: 2rem;
+      color: #006664;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+  }
+}

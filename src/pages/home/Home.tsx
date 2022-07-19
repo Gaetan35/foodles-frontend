@@ -6,6 +6,7 @@ import { Product } from "../../types/product";
 import { sendFetchRequest } from "../../utils/sendFetchRequest";
 import styles from "./Home.module.scss";
 import { ProductCard } from "./productCard/ProductCard";
+import { TopBar } from "./topBar/TopBar";
 
 type ProductResponse = Product[];
 
@@ -29,7 +30,7 @@ export const Home = () => {
 
   return (
     <div className={styles.homePageContainer}>
-      <div className={styles.topbar}>Topbar</div>
+      <TopBar cart={cart} />
       <div className={styles.pageContainer}>
         <h1 className={styles.title}>Livraison</h1>
 

@@ -1,16 +1,12 @@
 .homePageContainer {
   min-height: 100vh;
 
-  .topbar {
-    padding: 2rem;
-    background-color: #64adab;
-  }
-
   .pageContainer {
     padding: 2rem;
 
     .title {
-      margin: 10rem 0;
+      margin-top: 3rem;
+      margin-bottom: 7rem;
       font-size: 4rem;
       font-weight: bold;
     }
