@@ -5,6 +5,17 @@
   padding: 2rem;
   background-color: #64adab;
 
+  .flexRow {
+    display: flex;
+    align-items: center;
+  }
+
+  .selectedClientCredit {
+    margin-left: 2rem;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
   .cartRecap {
     display: flex;
     align-items: center;

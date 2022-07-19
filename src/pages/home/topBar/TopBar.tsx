@@ -3,8 +3,14 @@ import { formatPrice } from "../../../utils/formatPrice";
 import styles from "./TopBar.module.scss";
 import { ReactComponent as CartIcon } from "../../../assets/icons/cartIcon.svg";
 
+import { Client } from "../../../types/client";
+import { ClientSelect } from "./clientSelect/ClientSelect";
+
 type TopBarProps = {
   cart: Cart;
+  selectedClient?: Client;
+  setSelectedClient: (newClient: Client) => void;
+  clients: Client[];
 };
 
 const computeTotalCartPrice = (cart: Cart) =>
@@ -14,10 +20,26 @@ const computeTotalCartPrice = (cart: Cart) =>
     0
   );
 
-export const TopBar = ({ cart }: TopBarProps) => {
+export const TopBar = ({
+  cart,
+  selectedClient,
+  setSelectedClient,
+  clients,
+}: TopBarProps) => {
   return (
     <div className={styles.topBar}>
-      <div>Select client</div>
+      <div className={styles.flexRow}>
+        <ClientSelect
+          selectedClient={selectedClient}
+          setSelectedClient={setSelectedClient}
+          clients={clients}
+        />
+        {selectedClient !== undefined && (
+          <p className={styles.selectedClientCredit}>
+            Credit : {formatPrice(selectedClient.credit)}
+          </p>
+        )}
+      </div>
       <button className={styles.cartRecap}>
         <CartIcon />
         <p className={styles.totalCartPrice}>

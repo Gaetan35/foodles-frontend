@@ -1,0 +1,47 @@
+.inputContainer {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: white;
+  position: relative;
+  border-radius: 0.5rem;
+
+  .clientSelectInput {
+    width: 25rem;
+    font-size: 1.5rem;
+    border: 0;
+
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  .clientSelectButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .clientOptionsContainer {
+    padding: 0.5rem;
+    background-color: white;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 5.5rem;
+    box-shadow: 0 0.3rem 0.6rem 0 rgb(0 0 0 / 16%);
+
+    .clientOption {
+      padding: 0.5rem;
+      font-size: 1.5rem;
+    }
+
+    .activeClientOption {
+      background-color: #dbebff;
+    }
+
+    .inactiveClientOption {
+      background-color: white;
+    }
+  }
+}
