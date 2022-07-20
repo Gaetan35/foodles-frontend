@@ -17,9 +17,12 @@ type FetchProductsResponse = Product[];
 type FetchClientsResponse = Client[];
 
 export const Home = () => {
-  const { data: products } = useQuery<FetchProductsResponse, Error>(
-    "fetchProducts",
-    () => sendFetchRequest(apiRoutes.fetchProducts)
+  const {
+    data: products,
+    refetch: refetchProducts,
+    isLoading: isFetchProductsLoading,
+  } = useQuery<FetchProductsResponse, Error>("fetchProducts", () =>
+    sendFetchRequest(apiRoutes.fetchProducts)
   );
 
   const { data: clients, refetch: refetchClients } = useQuery<
@@ -81,6 +84,13 @@ export const Home = () => {
       <div className={styles.pageContainer}>
         <h1 className={styles.title}>Livraison</h1>
 
+        {isFetchProductsLoading ? (
+          <p className={styles.productsInfoMessage}>Chargement en cours ...</p>
+        ) : products?.length === 0 ? (
+          <p className={styles.productsInfoMessage}>
+            Aucun produit n'est disponible
+          </p>
+        ) : (
           <div className={styles.cardsContainer}>
             {products?.map((product) => (
               <ProductCard
@@ -91,6 +101,7 @@ export const Home = () => {
               />
             ))}
           </div>
+        )}
       </div>
     </div>
   );
