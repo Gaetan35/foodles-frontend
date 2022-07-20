@@ -81,7 +81,8 @@
           {
             "allowNullableBoolean": true
           }
-        ]
+        ],
+        "@typescript-eslint/no-floating-promises": "off"
       }
     }
   ]
