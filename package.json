@@ -9,6 +9,7 @@
     "react-dom": "^18.2.0",
     "react-query": "^3.38.1",
     "react-scripts": "5.0.1",
+    "react-toast": "^1.0.3",
     "web-vitals": "^2.1.0"
   },
   "devDependencies": {
