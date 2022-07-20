@@ -9,9 +9,11 @@ import { ClientSelect } from "./clientSelect/ClientSelect";
 
 type TopBarProps = {
   cart: Cart;
-  selectedClient?: Client;
-  setSelectedClient: (newClient: Client) => void;
+  selectedClientId?: string;
+  setSelectedClientId: (newClientId: string) => void;
   clients: Client[];
+  sendOrder: (cart: Cart) => void;
+  isSendOrderLoading: boolean;
 };
 
 const computeTotalCartPrice = (cart: Cart) =>
@@ -23,32 +25,41 @@ const computeTotalCartPrice = (cart: Cart) =>
 
 export const TopBar = ({
   cart,
-  selectedClient,
-  setSelectedClient,
+  selectedClientId,
+  setSelectedClientId,
   clients,
+  sendOrder,
+  isSendOrderLoading,
 }: TopBarProps) => {
   const totalCartPrice = computeTotalCartPrice(cart);
-  const isOrderDisabled = selectedClient === undefined || totalCartPrice === 0;
+  const isOrderDisabled =
+    selectedClientId === undefined || totalCartPrice === 0;
+
+  const selectedClient = clients.find(
+    (client) => client.id === selectedClientId
+  );
 
   return (
     <div className={styles.topBar}>
       <div className={styles.flexRow}>
         <ClientSelect
           selectedClient={selectedClient}
-          setSelectedClient={setSelectedClient}
+          setSelectedClientId={setSelectedClientId}
           clients={clients}
         />
-        {selectedClient !== undefined && (
+        {selectedClientId !== undefined && (
           <p className={styles.selectedClientCredit}>
-            Credit : {formatPrice(selectedClient.credit)}
+            Credit : {formatPrice(selectedClient?.credit ?? 0)}
           </p>
         )}
       </div>
       <button
+        onClick={() => sendOrder(cart)}
         className={classNames(styles.cartRecap, {
-          [styles.disabledOrderButton]: isOrderDisabled,
+          [styles.disabledOrderButton]: isOrderDisabled && !isSendOrderLoading,
+          [styles.loadingOrderButton]: isSendOrderLoading,
         })}
-        disabled={isOrderDisabled}
+        disabled={isOrderDisabled || isSendOrderLoading}
         title={
           isOrderDisabled
             ? "Veuillez sélectionner un client et au moins un produit"

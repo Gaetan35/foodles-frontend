@@ -20,6 +20,10 @@
     cursor: not-allowed;
   }
 
+  .loadingOrderButton {
+    cursor: wait;
+  }
+
   .cartRecap {
     display: flex;
     align-items: center;

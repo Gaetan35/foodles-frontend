@@ -8,25 +8,29 @@ import styles from "./ClientSelect.module.scss";
 
 type ClientSelectProps = {
   selectedClient?: Client;
-  setSelectedClient: (newClient: Client) => void;
+  setSelectedClientId: (newClientId: string) => void;
   clients: Client[];
 };
 
 export const ClientSelect = ({
   selectedClient,
-  setSelectedClient,
+  setSelectedClientId,
   clients,
 }: ClientSelectProps) => {
   const [query, setQuery] = useState("");
 
   return (
-    <Combobox value={selectedClient} onChange={setSelectedClient}>
+    <Combobox
+      value={selectedClient}
+      onChange={(client: Client) => setSelectedClientId(client?.id)}
+    >
       <div className={styles.inputContainer}>
         <Combobox.Input
           className={styles.clientSelectInput}
           onChange={(event) => setQuery(event.target.value)}
           displayValue={(client: Client) => client?.email}
           autoComplete="off"
+          placeholder="Sélectionnez un client"
         />
         <Combobox.Button className={styles.clientSelectButton}>
           <ChevronDownIcon />

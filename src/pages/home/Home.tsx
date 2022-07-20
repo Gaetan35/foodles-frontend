@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
+import { toast } from "react-toast";
 import { apiRoutes } from "../../routes/apiRoutes";
+import { NetworkError } from "../../types/NetworkError";
 import { Cart } from "../../types/cart";
 import { Client } from "../../types/client";
 import { Product } from "../../types/product";
 import { sendFetchRequest } from "../../utils/sendFetchRequest";
+import { sendPostRequest } from "../../utils/sendPostRequest";
 import styles from "./Home.module.scss";
 import { ProductCard } from "./productCard/ProductCard";
 import { TopBar } from "./topBar/TopBar";
@@ -19,13 +22,40 @@ export const Home = () => {
     () => sendFetchRequest(apiRoutes.fetchProducts)
   );
 
-  const { data: clients } = useQuery<FetchClientsResponse, Error>(
-    "fetchClients",
-    () => sendFetchRequest(apiRoutes.fetchClients)
-  );
+  const { data: clients, refetch: refetchClients } = useQuery<
+    FetchClientsResponse,
+    Error
+  >("fetchClients", () => sendFetchRequest(apiRoutes.fetchClients));
 
   const [cart, setCart] = useState<Cart>({});
-  const [selectedClient, setSelectedClient] = useState<Client>();
+  const [selectedClientId, setSelectedClientId] = useState<string>();
+
+  const { mutate: sendOrder, isLoading: isSendOrderLoading } = useMutation(
+    (cartToOrder: Cart) =>
+      sendPostRequest(apiRoutes.sendOrder, {
+        clientId: selectedClientId,
+        orders: Object.entries(cartToOrder).map(
+          ([productId, { quantity }]) => ({ productId, quantity })
+        ),
+      }),
+    {
+      onSuccess: () => {
+        refetchClients();
+        refetchProducts();
+        setCart({});
+        toast.success("Votre commande a bien été envoyée");
+      },
+      onError: (error: NetworkError) => {
+        if (error.statusCode === 400) {
+          refetchProducts();
+          setCart({});
+          toast.error("Les produits demandés ne sont plus disponibles");
+        } else {
+          toast.error("Une erreur s'est produite");
+        }
+      },
+    }
+  );
 
   const modifyCart = (productId: string, unitPrice: number, amount: number) => {
     setCart((previousCart) => {
@@ -42,23 +72,25 @@ export const Home = () => {
     <div className={styles.homePageContainer}>
       <TopBar
         cart={cart}
-        selectedClient={selectedClient}
-        setSelectedClient={setSelectedClient}
+        selectedClientId={selectedClientId}
+        setSelectedClientId={setSelectedClientId}
         clients={clients ?? []}
+        sendOrder={sendOrder}
+        isSendOrderLoading={isSendOrderLoading}
       />
       <div className={styles.pageContainer}>
         <h1 className={styles.title}>Livraison</h1>
 
-        <div className={styles.cardsContainer}>
-          {products?.map((product) => (
-            <ProductCard
-              key={product.id}
-              {...product}
-              modifyCart={modifyCart}
-              selectedQuantity={cart[product.id]?.quantity ?? 0}
-            />
-          ))}
-        </div>
+          <div className={styles.cardsContainer}>
+            {products?.map((product) => (
+              <ProductCard
+                key={product.id}
+                {...product}
+                modifyCart={modifyCart}
+                selectedQuantity={cart[product.id]?.quantity ?? 0}
+              />
+            ))}
+          </div>
       </div>
     </div>
   );
