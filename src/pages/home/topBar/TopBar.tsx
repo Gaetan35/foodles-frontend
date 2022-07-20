@@ -6,6 +6,7 @@ import { ReactComponent as CartIcon } from "../../../assets/icons/cartIcon.svg";
 
 import { Client } from "../../../types/client";
 import { ClientSelect } from "./clientSelect/ClientSelect";
+import { computeTotalCartPrice } from "../../../utils/computeTotalCartPrice";
 
 type TopBarProps = {
   cart: Cart;
@@ -15,13 +16,6 @@ type TopBarProps = {
   sendOrder: (cart: Cart) => void;
   isSendOrderLoading: boolean;
 };
-
-const computeTotalCartPrice = (cart: Cart) =>
-  Object.values(cart).reduce(
-    (previousValue, { unitPrice, quantity }) =>
-      previousValue + unitPrice * quantity,
-    0
-  );
 
 export const TopBar = ({
   cart,

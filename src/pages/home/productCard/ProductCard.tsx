@@ -8,7 +8,11 @@ import { ReactComponent as MinusIcon } from "../../../assets/icons/minusIcon.svg
 
 type ProductCardProps = Product & {
   selectedQuantity: number;
-  modifyCart: (productId: string, unitPrice: number, amount: number) => void;
+  modifyCart: (params: {
+    productId: string;
+    unitPrice: number;
+    amount: number;
+  }) => void;
 };
 
 export const ProductCard = ({
@@ -39,7 +43,9 @@ export const ProductCard = ({
           {selectedQuantity === 0 ? (
             <button
               className={classNames(styles.addToCart, styles.productCartButton)}
-              onClick={() => modifyCart(id, price, 1)}
+              onClick={() =>
+                modifyCart({ productId: id, unitPrice: price, amount: 1 })
+              }
             >
               <AddToCartIcon />
             </button>
@@ -50,7 +56,9 @@ export const ProductCard = ({
                   styles.removeFromCart,
                   styles.productCartButton
                 )}
-                onClick={() => modifyCart(id, price, -1)}
+                onClick={() =>
+                  modifyCart({ productId: id, unitPrice: price, amount: -1 })
+                }
               >
                 <MinusIcon />
               </button>
@@ -61,7 +69,9 @@ export const ProductCard = ({
                   { [styles.disabledButton]: isMaxQuantity }
                 )}
                 disabled={isMaxQuantity}
-                onClick={() => modifyCart(id, price, 1)}
+                onClick={() =>
+                  modifyCart({ productId: id, unitPrice: price, amount: 1 })
+                }
                 title={isMaxQuantity ? "Quantité maximale atteinte" : ""}
               >
                 <PlusIcon />

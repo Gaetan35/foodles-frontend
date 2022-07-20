@@ -1,75 +1,42 @@
 import { useState } from "react";
-import { useMutation, useQuery } from "react-query";
 import { toast } from "react-toast";
-import { apiRoutes } from "../../routes/apiRoutes";
 import { NetworkError } from "../../types/NetworkError";
 import { Cart } from "../../types/cart";
-import { Client } from "../../types/client";
-import { Product } from "../../types/product";
-import { sendFetchRequest } from "../../utils/sendFetchRequest";
-import { sendPostRequest } from "../../utils/sendPostRequest";
 import styles from "./Home.module.scss";
 import { ProductCard } from "./productCard/ProductCard";
 import { TopBar } from "./topBar/TopBar";
-
-type FetchProductsResponse = Product[];
-
-type FetchClientsResponse = Client[];
+import { modifyCart } from "../../utils/modifyCart";
+import { useFetchProducts } from "../../hooks/useFetchProducts";
+import { useFetchClients } from "../../hooks/useFetchClients";
+import { useSendOrder } from "../../hooks/useSendOrder";
 
 export const Home = () => {
-  const {
-    data: products,
-    refetch: refetchProducts,
-    isLoading: isFetchProductsLoading,
-  } = useQuery<FetchProductsResponse, Error>("fetchProducts", () =>
-    sendFetchRequest(apiRoutes.fetchProducts)
-  );
+  const { products, refetchProducts, isFetchProductsLoading } =
+    useFetchProducts();
 
-  const { data: clients, refetch: refetchClients } = useQuery<
-    FetchClientsResponse,
-    Error
-  >("fetchClients", () => sendFetchRequest(apiRoutes.fetchClients));
+  const { clients, refetchClients } = useFetchClients();
 
   const [cart, setCart] = useState<Cart>({});
   const [selectedClientId, setSelectedClientId] = useState<string>();
 
-  const { mutate: sendOrder, isLoading: isSendOrderLoading } = useMutation(
-    (cartToOrder: Cart) =>
-      sendPostRequest(apiRoutes.sendOrder, {
-        clientId: selectedClientId,
-        orders: Object.entries(cartToOrder).map(
-          ([productId, { quantity }]) => ({ productId, quantity })
-        ),
-      }),
-    {
-      onSuccess: () => {
-        refetchClients();
+  const { sendOrder, isSendOrderLoading } = useSendOrder({
+    clientId: selectedClientId,
+    onSuccess: () => {
+      refetchClients();
+      refetchProducts();
+      setCart({});
+      toast.success("Votre commande a bien été envoyée");
+    },
+    onError: (error: NetworkError) => {
+      if (error.statusCode === 400) {
         refetchProducts();
         setCart({});
-        toast.success("Votre commande a bien été envoyée");
-      },
-      onError: (error: NetworkError) => {
-        if (error.statusCode === 400) {
-          refetchProducts();
-          setCart({});
-          toast.error("Les produits demandés ne sont plus disponibles");
-        } else {
-          toast.error("Une erreur s'est produite");
-        }
-      },
-    }
-  );
-
-  const modifyCart = (productId: string, unitPrice: number, amount: number) => {
-    setCart((previousCart) => {
-      const previousQuantity = previousCart[productId]?.quantity ?? 0;
-
-      return {
-        ...previousCart,
-        [productId]: { unitPrice, quantity: previousQuantity + amount },
-      };
-    });
-  };
+        toast.error("Les produits demandés ne sont plus disponibles");
+      } else {
+        toast.error("Une erreur s'est produite");
+      }
+    },
+  });
 
   return (
     <div className={styles.homePageContainer}>
@@ -96,7 +63,7 @@ export const Home = () => {
               <ProductCard
                 key={product.id}
                 {...product}
-                modifyCart={modifyCart}
+                modifyCart={(params) => modifyCart({ ...params, setCart })}
                 selectedQuantity={cart[product.id]?.quantity ?? 0}
               />
             ))}

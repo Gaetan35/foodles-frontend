@@ -1,7 +1,7 @@
 import { formatPrice } from "./formatPrice";
 
 describe("formatPrice", () => {
-  test.each`
+  it.each`
     price    | expectedResult
     ${0}     | ${"0,00 €"}
     ${2.1}   | ${"2,10 €"}
