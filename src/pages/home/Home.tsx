@@ -81,7 +81,7 @@ export const Home = () => {
         sendOrder={sendOrder}
         isSendOrderLoading={isSendOrderLoading}
       />
-      <div className={styles.pageContainer}>
+      <main className={styles.pageContainer}>
         <h1 className={styles.title}>Livraison</h1>
 
         {isFetchProductsLoading ? (
@@ -102,7 +102,7 @@ export const Home = () => {
             ))}
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 };

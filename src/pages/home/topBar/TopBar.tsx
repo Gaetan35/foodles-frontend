@@ -40,7 +40,7 @@ export const TopBar = ({
   );
 
   return (
-    <div className={styles.topBar}>
+    <header className={styles.topBar}>
       <div className={styles.flexRow}>
         <ClientSelect
           selectedClient={selectedClient}
@@ -69,6 +69,6 @@ export const TopBar = ({
         <CartIcon />
         <p className={styles.totalCartPrice}>{formatPrice(totalCartPrice)}</p>
       </button>
-    </div>
+    </header>
   );
 };
